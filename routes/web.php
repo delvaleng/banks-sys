@@ -21,9 +21,9 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
+Route::any('{slug}', function () {
+    return view('welcome');
+});
 
 
 // Route::resource('/account',   'AccountOwnController@index')->name('account');

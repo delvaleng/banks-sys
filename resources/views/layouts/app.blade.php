@@ -58,16 +58,6 @@
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                        {{ __('Transacciones Bancarias') }}
-                                    </a>
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Estado de la cuenta') }}
-                                    </a>
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
                                         {{ __('Salir') }}
                                     </a>
 
@@ -87,7 +77,15 @@
         </main>
 
         {{--Footer--}}
-        <footer></footer>
+        <v-footer padless>
+            <v-col class="text-center" cols="12">
+                {{ Date('Y') }} — <strong>Sistema de Transacciones Bancarias</strong>
+            </v-col>
+        </v-footer>
+
+        <!-- <script src="{{ asset('js/app.js') }}" defer></script> -->
+
+        <!-- <script src="{{ asset('js/app.js') }}" defer></script> -->
 
 
     </div>
