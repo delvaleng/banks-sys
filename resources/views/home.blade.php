@@ -1,7 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-    <!-- <example-component></example-component> -->
-    <main-component></main-component>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+          <default></default>
+        </div>
+    </div>
+</div>
 
 @endsection
