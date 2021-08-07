@@ -16,11 +16,11 @@ mix.js('resources/js/app.js', 'public/js')
 
 mix.disableNotifications();
 
-mix.browserSync('http://bank-sys.test/');
+// mix.browserSync('http://bank-sys.test/');
 
-mix.options({
-  hmrOptions: {
-    host: 'http://bank-sys.test/',
-    port: 8080,
-  },
-});
+// mix.options({
+//   hmrOptions: {
+//     host: 'http://bank-sys.test/',
+//     port: 8080,
+//   },
+// });
