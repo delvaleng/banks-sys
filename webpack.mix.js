@@ -12,11 +12,10 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
-    .sass('resources/sass/app.scss', 'public/css');
+    .sass('resources/sass/app.scss', 'public/css')
+    .browserSync('http://bank-sys.test')
+    .disableNotifications();
 
-mix.disableNotifications();
-
-// mix.browserSync('http://bank-sys.test/');
 
 // mix.options({
 //   hmrOptions: {
