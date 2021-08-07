@@ -1929,23 +1929,42 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'main',
   data: function data() {
+    var _this = this;
+
     return {
+      routePath: null,
+      // this.$route.name,
       items: [{
         title: 'Estado de la Cuenta',
-        icon: 'mdi-account-details-outline'
+        icon: 'mdi-account-details-outline',
+        method: function method() {
+          return _this.resumenAccount();
+        }
       }, {
         title: 'Transacciones Bancarias',
-        icon: 'mdi-account-cash'
+        icon: 'mdi-account-cash',
+        method: function method() {
+          return _this.showTransaction();
+        }
       }]
     };
+  },
+  mounted: function mounted() {
+    console.log(this.$route);
+  },
+  created: function created() {// axios.get('/notas').then(res => {
+    //     this.notas = res.data;
+    // })
+  },
+  methods: {
+    resumenAccount: function resumenAccount() {
+      alert("hola");
+    },
+    showTransaction: function showTransaction() {
+      alert("hola2");
+    }
   }
 });
 
@@ -38228,42 +38247,54 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c(
-    "v-card",
+    "v-app",
     { attrs: { height: "350px" } },
     [
       _c(
-        "v-navigation-drawer",
-        { attrs: { absolute: "", permanent: "", left: "", fluid: "" } },
+        "v-card",
+        { attrs: { height: "100%" } },
         [
           _c(
-            "v-list",
-            { attrs: { dense: "" } },
-            _vm._l(_vm.items, function(item) {
-              return _c(
-                "v-list-item",
-                { key: item.title },
-                [
-                  _c(
-                    "v-list-item-icon",
+            "v-navigation-drawer",
+            { attrs: { absolute: "", permanent: "", left: "" } },
+            [
+              _c(
+                "v-list",
+                { attrs: { dense: "" } },
+                _vm._l(_vm.items, function(item) {
+                  return _c(
+                    "v-list-item",
+                    { key: item.title, on: { click: item.method } },
                     [
-                      _c("v-icon", { attrs: { small: "" } }, [
-                        _vm._v(_vm._s(item.icon))
-                      ])
+                      _c(
+                        "v-list-item-icon",
+                        [
+                          _c("v-icon", { attrs: { small: "" } }, [
+                            _vm._v(_vm._s(item.icon))
+                          ])
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-list-item-content",
+                        [_c("v-list-item-title", [_vm._v(_vm._s(item.title))])],
+                        1
+                      )
                     ],
                     1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "v-list-item-content",
-                    [_c("v-list-item-title", [_vm._v(_vm._s(item.title))])],
-                    1
                   )
-                ],
+                }),
                 1
               )
-            }),
+            ],
             1
-          )
+          ),
+          _vm._v(" "),
+          _c("v-main", {
+            class: ["tripodeContent", _vm.routePath],
+            staticStyle: { "background-color": "#fafafa" }
+          })
         ],
         1
       )
