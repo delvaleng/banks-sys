@@ -24,7 +24,6 @@ class CreateAccountOwnTable extends Migration
 
           $table->boolean('status')->nullable()->default(false);
           $table->timestamps();
-          $table->softDeletes();
           $table->foreign('id_user')->references('id')->on('users');
           $table->foreign('id_tp_account')->references('id')->on('tp_account');
         });

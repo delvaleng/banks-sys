@@ -36,6 +36,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::middleware(['auth:api'])->group(function () {
+
   Route::get('accountlist', 'AccountOwnController@index');
+  Route::post('/tranferOwn/create', 'TranferOwnController@create');
+
 
 });

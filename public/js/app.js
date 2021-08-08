@@ -2142,31 +2142,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
+      token: null,
+      id: null,
       alert: false,
       alertProgress: false,
       alert1: {
@@ -2200,24 +2180,21 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     console.log('Component transaDcciones.');
+    this.token = document.querySelector("meta[name='user-token']").getAttribute('content');
+    this.id = document.querySelector("meta[name='user-id']").getAttribute('content');
     this.getAccount();
   },
   methods: {
     getAccount: function getAccount() {
       var _this = this;
 
-      console.log('Component transaDcciones.');
-      var token = document.querySelector("meta[name='user-token']").getAttribute('content');
-      var id = document.querySelector("meta[name='user-id']").getAttribute('content');
       axios({
         method: "get",
         url: "/api/accountlist",
-        data: {
-          id: id
-        },
+        data: {},
         headers: {
           "Accept": "application/json",
-          "Authorization": "Bearer " + token
+          "Authorization": "Bearer " + this.token
         }
       }).then(function (response) {
         _this.accounts = response.data.account;
@@ -2246,30 +2223,69 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       this.alert = false;
-      console.log(this.formAccountOwn.cost);
+      console.log(this.formAccountOwn);
 
       if (this.$refs.formAccountOwn.validate()) {
         if (this.formAccountOwn.origen.id == this.formAccountOwn.destino.id) {
           this.formAccountOwn.destino = null;
           this.alert = true;
           this.alert1.type = 'error';
-          this.alert1.msg = 'Las cuentas de origen y destino deben ser diferentes';
+          this.alert1.msg = 'Las cuentas de origen y destino deben ser diferentes.';
           this.alertProgress = false;
           setTimeout(function () {
             _this2.alert = false;
           }, 5000);
-        } else if (this.formAccountOwn.cost <= 0 || this.formAccountOwn.cost > this.formAccountOwn.origen.balance) {
+        } else if (this.formAccountOwn.cost <= 0) {
           this.formAccountOwn.costFormat = null;
           this.formAccountOwn.cost = null;
           this.alert = true;
           this.alert1.type = 'error';
-          this.alert1.msg = 'El monto a transferir debe ser válido';
+          this.alert1.msg = 'El monto a transferir debe ser válido.';
+          this.alertProgress = false;
+          setTimeout(function () {
+            _this2.alert = false;
+          }, 5000);
+        } else if (this.formAccountOwn.cost > this.formAccountOwn.origen.balance) {
+          this.formAccountOwn.costFormat = null;
+          this.formAccountOwn.cost = null;
+          this.alert = true;
+          this.alert1.type = 'error';
+          this.alert1.msg = 'Su saldo es insuficiente para realizar esa operación.';
           this.alertProgress = false;
           setTimeout(function () {
             _this2.alert = false;
           }, 5000);
         } else {
           this.alertProgress = true;
+          axios({
+            method: "post",
+            url: "/api/tranferOwn/create",
+            data: this.formAccountOwn,
+            headers: {
+              "Accept": "application/json",
+              "Authorization": "Bearer " + this.token
+            }
+          }).then(function (response) {
+            console.log(response.data);
+
+            if (response.data) {
+              if (response.data.status == true) {
+                _this2.getAccount();
+
+                _this2.$refs.formAccountOwn.reset();
+              }
+
+              _this2.alert = true;
+              _this2.alert1.type = response.data.status ? 'success' : 'error';
+              _this2.alert1.msg = response.data.msg;
+              _this2.alertProgress = false;
+              setTimeout(function () {
+                _this2.alert = false;
+              }, 10000);
+            }
+          })["catch"](function (error) {
+            console.log(error);
+          });
         }
       }
     }
@@ -38954,27 +38970,29 @@ var render = function() {
               _c("v-icon", { attrs: { left: "", small: "" } }, [
                 _vm._v("\n                mdi-account-group\n            ")
               ]),
-              _vm._v("\n            Terceros\n        ")
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "v-tab",
-            [
-              _c("v-icon", { attrs: { left: "", small: "" } }, [
-                _vm._v(
-                  "\n                mdi-account-multiple-outline\n            "
-                )
-              ]),
-              _vm._v("\n            Otros Bancos\n        ")
+              _vm._v("\n            Cuentas a Terceros\n        ")
             ],
             1
           ),
           _vm._v(" "),
           _c(
             "v-tab-item",
+            { staticClass: "pa-4" },
             [
+              _c(
+                "p",
+                {
+                  staticClass: "font-italic font-weight-bold pl-4",
+                  attrs: { align: "justify" }
+                },
+                [
+                  _c("br"),
+                  _vm._v(
+                    "\n                Realiza transferencias entre tus cuentas de forma rápida y efectiva.\n            "
+                  )
+                ]
+              ),
+              _vm._v(" "),
               _c(
                 "v-form",
                 { ref: "formAccountOwn" },
@@ -38990,13 +39008,18 @@ var render = function() {
                           _c(
                             "v-alert",
                             {
-                              attrs: { type: _vm.alert1.type, value: _vm.alert }
+                              attrs: {
+                                type: _vm.alert1.type,
+                                value: _vm.alert,
+                                dense: "",
+                                text: ""
+                              }
                             },
                             [
                               _vm._v(
-                                "\n                        " +
+                                "\n                            " +
                                   _vm._s(_vm.alert1.msg) +
-                                  "\n                    "
+                                  "\n                        "
                               )
                             ]
                           ),
@@ -39182,33 +39205,6 @@ var render = function() {
                     _c("p", { staticClass: "mb-0" }, [
                       _vm._v(
                         "\n                        Donec venenatis vulputate lorem. Aenean viverra rhoncus pede. In dui magna, posuere eget, vestibulum et, tempor auctor, justo. Fusce commodo aliquam arcu. Suspendisse enim turpis, dictum sed, iaculis a, condimentum nec, nisi.\n                    "
-                      )
-                    ])
-                  ])
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "v-tab-item",
-            [
-              _c(
-                "v-card",
-                { attrs: { flat: "" } },
-                [
-                  _c("v-card-text", [
-                    _c("p", [
-                      _vm._v(
-                        "\n                        Fusce a quam. Phasellus nec sem in justo pellentesque facilisis. Nam eget dui. Proin viverra, ligula sit amet ultrices semper, ligula arcu tristique sapien, a accumsan nisi mauris ac eros. In dui magna, posuere eget,\n                        vestibulum et, tempor auctor, justo.\n                    "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("p", { staticClass: "mb-0" }, [
-                      _vm._v(
-                        "\n                        Cras sagittis. Phasellus nec sem in justo pellentesque facilisis. Proin sapien ipsum, porta a, auctor quis, euismod ut, mi. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nam at tortor in tellus interdum\n                        sagittis.\n                    "
                       )
                     ])
                   ])
