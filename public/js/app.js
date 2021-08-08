@@ -1869,28 +1869,7 @@ __webpack_require__.r(__webpack_exports__);
       drawer: false
     };
   },
-  methods: {
-    toggleLeftMenu: function toggleLeftMenu() {
-      if (this.rightMenu && this.leftMenu) {
-        this.leftMenu = !this.leftMenu;
-        this.rightMenu = false;
-        this.$nextTick(function () {
-          var d = document.getElementById("nav2");
-          d.classList.add("hide");
-        });
-      } else if (!this.rightMenu && !this.leftMenu) {
-        this.leftMenu = true;
-      } else if (!this.rightMenu && this.leftMenu) {
-        this.leftMenu = false;
-        var d = document.getElementById("nav2");
-        d.classList.add("hide");
-      } else if (this.rightMenu && !this.leftMenu) {
-        this.leftMenu = true;
-        var d = document.getElementById("nav2");
-        d.classList.remove("hide"); // this.rightMenu = true;
-      }
-    }
-  }
+  methods: {}
 });
 
 /***/ }),

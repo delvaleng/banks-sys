@@ -127,11 +127,11 @@ export default {
     methods: {
         getAccount() {
             axios.get('/api/accountlist',
-                // {
-                //     params: {
-                //       user_id: document.querySelector("meta[name='user-id']").getAttribute('content'),
-                //     }
-                // }
+                    // {
+                    //     params: {
+                    //       user_id: document.querySelector("meta[name='user-id']").getAttribute('content'),
+                    //     }
+                    // }
                 )
                 .then((response) => {
                     console.log(response);
