@@ -3,12 +3,11 @@
 
 @section('content')
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-          <default></default>
-        </div>
-    </div>
-</div>
-
+@if (Auth::check())
+ <app></app>
+@else
+<script>
+   window.location = "/login";
+ </script>
+@endif
 @endsection

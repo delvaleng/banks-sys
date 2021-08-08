@@ -3,23 +3,20 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    @if (Auth::check())
+     <meta name="user-id" content="{{ Auth::user()->id }}">
+    @endif 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
-
-
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
-
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
 <body>
     <div id="app">
@@ -78,16 +75,8 @@
             @yield('content')
         </main>
 
-        <!-- <v-footer padless>
-            <v-col class="text-center" cols="12">
-                {{ Date('Y') }} — <strong>Sistema de Transacciones Bancarias</strong>
-            </v-col>
-        </v-footer> -->
-
-        <!-- <script src="{{ asset('js/app.js') }}" defer></script> -->
-
-        <!-- <script src="{{ asset('js/app.js') }}" defer></script> -->
-
+      <!-- Scripts -->
+      <script src="{{ asset('js/app.js') }}"></script>
 
     </div>
 </body>

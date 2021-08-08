@@ -15,17 +15,19 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/', 'HomeController@index')->name('home');
 
-Route::any('{slug}', function () {
-    return view('welcome');
+Route::get('{any?}', function(){
+  return view('home');
 });
 
 
-// Route::resource('/account',   'AccountOwnController@index')->name('account');
-// Route::resource('/tpaccount', 'TpAccountController@index')->name('tpaccount');
+
+
+// Route::resource('AccountOwnController@index')->name('account');
+// Route::resource('TpAccountController@index')->name('tpaccount');

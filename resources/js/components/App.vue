@@ -1,57 +1,54 @@
 <template>
-<v-app height="350px">
-    <v-card height="100%">
-        <v-navigation-drawer absolute permanent left>
-            <v-list dense>
-                <v-list-item v-for="item in items" :key="item.title" @click="item.method">
-                    <v-list-item-icon>
-                        <v-icon small>{{ item.icon }}</v-icon>
-                    </v-list-item-icon>
+<div id="app">
+    <v-app light>
 
-                    <v-list-item-content>
-                        <v-list-item-title>{{ item.title }}</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-            </v-list>
-        </v-navigation-drawer>
-        <v-main style="background-color:#fafafa" >
+        <Navbar />
+        <v-main style="padding-left:250px;" >
+            <router-view></router-view>
         </v-main>
-    </v-card>
-</v-app>
+    </v-app>
+</div>
 </template>
+
 <script>
+import Navbar from './Navbar';
+
 export default {
-    data() {
-        return {
-            routePath: null,// this.$route.name,
-            items: [{
-                    title: 'Estado de la Cuenta',
-                    icon: 'mdi-account-details-outline',
-                    method: () => this.resumenAccount()
-                },
-                {
-                    title: 'Transacciones Bancarias',
-                    icon: 'mdi-account-cash',
-                    method: () => this.showTransaction()
-                },
-            ],
-        }
+    name: 'App',
+
+    components: {
+        Navbar,
     },
-    mounted() {
-      console.log(this.$route);
-    },
-    created() {
-        // axios.get('/notas').then(res => {
-        //     this.notas = res.data;
-        // })
-    },
+
+    data: () => ({
+        drawer: false,
+    }),
     methods: {
-        resumenAccount() {
-            alert("hola");
-        },
-        showTransaction() {
-            alert("hola2");
+        toggleLeftMenu() {
+            if (this.rightMenu && this.leftMenu) {
+
+                this.leftMenu = !this.leftMenu;
+                this.rightMenu = false;
+                this.$nextTick(() => {
+                    var d = document.getElementById("nav2");
+                    d.classList.add("hide");
+                });
+            } else if (!this.rightMenu && !this.leftMenu) {
+                this.leftMenu = true;
+            } else if (!this.rightMenu && this.leftMenu) {
+                this.leftMenu = false;
+                var d = document.getElementById("nav2");
+                d.classList.add("hide");
+
+            } else if (this.rightMenu && !this.leftMenu) {
+                this.leftMenu = true;
+                var d = document.getElementById("nav2");
+                d.classList.remove("hide");
+                // this.rightMenu = true;
+            }
+
+
         }
     }
-}
+};
 </script>

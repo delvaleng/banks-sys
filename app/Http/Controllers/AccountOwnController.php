@@ -15,6 +15,7 @@ class AccountOwnController extends Controller
     public function index(Request $request)
     {
       if($request->ajax()){
+        dd( auth()->id() );
           return AccountOwn::where('id_user', auth()->id())->get();
       }else{
           return view('home');
