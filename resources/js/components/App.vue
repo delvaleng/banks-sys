@@ -14,7 +14,7 @@
                 </v-list-item>
             </v-list>
         </v-navigation-drawer>
-        <v-main style="background-color:#fafafa" :class="['tripodeContent', routePath]">
+        <v-main style="background-color:#fafafa" >
         </v-main>
     </v-card>
 </v-app>
@@ -33,7 +33,6 @@ export default {
                     title: 'Transacciones Bancarias',
                     icon: 'mdi-account-cash',
                     method: () => this.showTransaction()
-
                 },
             ],
         }
@@ -52,7 +51,6 @@ export default {
         },
         showTransaction() {
             alert("hola2");
-
         }
     }
 }

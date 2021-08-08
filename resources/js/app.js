@@ -6,7 +6,7 @@
 
 require('./bootstrap');
 
-window.Vue = require('vue');
+window.Vue = require('vue').default;
 
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
