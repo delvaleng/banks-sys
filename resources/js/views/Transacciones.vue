@@ -21,32 +21,39 @@
         </v-tab>
 
         <v-tab-item>
-            <v-form ref="formEditProfile">
+            <v-form ref="formAccountOwn">
 
                 <v-row class="ma-1">
 
-                    <v-col cols="12" md="12">
-                        <span class="name">Indica la cuentas</span>
-                    </v-col>
-                    <!-- Pais -->
+
+                  <v-col cols="12" md="12">
+                    <v-alert :type="alert1.type" :value="alert">
+                        {{ alert1.msg }}
+                    </v-alert>
+                    <v-progress-linear
+                      v-show="alertProgress"
+                      indeterminate
+                      color="green"
+                    ></v-progress-linear>
+                  </v-col>
+
                     <v-col cols="12" md="6">
-                        <v-autocomplete filled dense placeholder="Cuenta Origen" :items="account" item-text="name" item-value="id" return-object @input="getAccount()" v-model="formAccountOwn.origen" :rules="rules.accountown.origen">
+                        <v-autocomplete  dense placeholder="Cuenta Origen"  label="Cuenta Origen" :items="accounts" item-text="n_account" item-value="id" return-object @input="getAccount()" v-model="formAccountOwn.origen" :rules="rules.accountown.origen">
                         </v-autocomplete>
                     </v-col>
-                    <!-- Pais -->
                     <v-col cols="12" md="6">
-                        <v-autocomplete filled dense placeholder="Cuenta Destino" :items="account" item-text="name" item-value="id" return-object @input="getAccount()" v-model="formAccountOwn.destino" :rules="rules.accountown.destino">
+                        <v-autocomplete  dense placeholder="Cuenta Destino" label="Cuenta Destino" :items="accounts" item-text="n_account" item-value="id" return-object @input="getAccount()" v-model="formAccountOwn.destino" :rules="rules.accountown.destino">
                         </v-autocomplete>
                     </v-col>
 
                     <v-col md="6" cols="12">
-                        <v-text-field v-model="formAccountOwn.montoFormat" placeholder="Monto a tranferir" @keypress="isNumberKey($event)" @blur="formatCost($event, index)" filled dense>
+                        <v-text-field v-model="formAccountOwn.costFormat" :rules="rules.accountown.costFormat" label="Monto a tranferir"  placeholder="Monto a tranferir" @keypress="isNumberKey($event)" @blur="formatCost($event)"  dense>
                         </v-text-field>
                     </v-col>
 
                     <v-col md="6" offset="3" cols="12" class="text-center">
-                        <v-btn color="green" dark block>
-                            tranferir
+                        <v-btn color="green" dark block @click="tranferir()">
+                            Tranferir
                         </v-btn>
                     </v-col>
                 </v-row>
@@ -104,16 +111,23 @@
 export default {
     data() {
         return {
-            account: [],
+          alert: false,
+          alertProgress: false,
+          alert1:{
+            type:'warning',
+            msg: null,
+          },
+            accounts: [],
             formAccountOwn: {
-                monto: null,
-                montoFormat: null,
+                cost: null,
+                costFormat: null,
                 origen: null,
                 destino: null,
             },
             rules: {
                 accountown: {
-                    monto: [(v) => !!v || "Monto es requerida."],
+                    cost: [(v) => !!v || "Monto es requerido."],
+                    costFormat: [(v) => !!v || "Monto es requerido."],
                     origen: [(v) => !!v || "Cuenta de origen es requerida."],
                     destino: [(v) => !!v || "Cuenta de destino es requerida."],
                 }
@@ -126,16 +140,23 @@ export default {
     },
     methods: {
         getAccount() {
-            axios.get('/api/accountlist',
-                    // {
-                    //     params: {
-                    //       user_id: document.querySelector("meta[name='user-id']").getAttribute('content'),
-                    //     }
-                    // }
-                )
+            console.log('Component transaDcciones.')
+
+            const token = document.querySelector("meta[name='user-token']").getAttribute('content');
+            const id = document.querySelector("meta[name='user-id']").getAttribute('content');
+            axios({
+                    method: "get",
+                    url: "/api/accountlist",
+                    data: {
+                        id: id,
+                    },
+                    headers: {
+                        "Accept": "application/json",
+                        "Authorization": "Bearer " + token,
+                    }
+                })
                 .then((response) => {
-                    console.log(response);
-                    this.account = response.data.data;
+                    this.accounts = response.data.account;
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -154,13 +175,54 @@ export default {
                 return true;
             }
         },
-        formatCost(e, i) {
-            this.form.plans[i].costFormat = new Intl.NumberFormat('es-CO', {
+        formatCost(e) {
+            this.formAccountOwn.costFormat = new Intl.NumberFormat('es-CO', {
                 style: 'currency',
                 currency: 'COP'
             }).format(e.target.value);
-            this.form.plans[i].cost = e.target.value;
+            this.formAccountOwn.cost = e.target.value;
         },
+        tranferir() {
+          this.alert=false
+
+            console.log(this.formAccountOwn.cost);
+            if (this.$refs.formAccountOwn.validate()) {
+
+                if (this.formAccountOwn.origen.id == this.formAccountOwn.destino.id) {
+                  this.formAccountOwn.destino = null
+                  this.alert=true
+                  this.alert1.type='error'
+                  this.alert1.msg= 'Las cuentas de origen y destino deben ser diferentes' ;
+                  this.alertProgress=false
+
+                  setTimeout(()=>{
+                    this.alert=false
+                  },5000)
+                }
+
+                else if (this.formAccountOwn.cost <= 0 || this.formAccountOwn.cost > this.formAccountOwn.origen.balance) {
+
+                  this.formAccountOwn.costFormat= null
+                  this.formAccountOwn.cost= null
+                  this.alert=true
+                  this.alert1.type='error'
+                  this.alert1.msg='El monto a transferir debe ser válido'
+
+                  this.alertProgress=false
+
+                  setTimeout(()=>{
+                    this.alert=false
+                  },5000)
+                }
+                else{
+                  this.alertProgress=true
+                }
+
+
+
+
+            }
+        }
     }
 }
 </script>

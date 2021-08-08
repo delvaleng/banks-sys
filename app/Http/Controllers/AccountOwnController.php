@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\AccountOwn;
+use Illuminate\Support\Facades\DB;
 
 class AccountOwnController extends Controller
 {
@@ -14,12 +15,14 @@ class AccountOwnController extends Controller
      */
     public function index(Request $request)
     {
-      if($request->ajax()){
-        dd( auth()->id() );
-          return AccountOwn::where('id_user', auth()->id())->get();
-      }else{
-          return view('home');
-      }
+        $account = AccountOwn::select(DB::raw("UPPER(CONCAT(tp_account.name,' N°', account_own.n_account,'- Saldo:', FORMAT(account_own.balance, 2, 'de_DE') ) ) AS n_account"), 'account_own.id', 'account_own.balance')
+        ->join('tp_account', 'tp_account.id',  '=', 'account_own.id_tp_account')
+        ->where('status', true)
+        ->where('id_user', auth()->id())
+        ->get();
+        return response()->json([
+           "account" => $account
+        ],200);
     }
 
     /**

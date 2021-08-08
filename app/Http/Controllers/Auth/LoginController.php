@@ -8,6 +8,7 @@ use App\Rules\PasswordValidationRule;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Auth;
+use App\User;
 
 
 class LoginController extends Controller
@@ -40,7 +41,14 @@ class LoginController extends Controller
     public function __construct()
     {
       $this->middleware('guest',['only' => 'showLoginForm'])->except('logout');
+      $this->url                      = config('app.url');
+      $this->passport_client_id       = config('passport.personal_access_client.id');
+      $this->passport_client_secret   = config('passport.personal_access_client.secret');
+
+
     }
+
+
     public function login(){
 
       $credentials = $this->validate(request(), [
@@ -55,12 +63,39 @@ class LoginController extends Controller
 
       if(Auth::attempt($credentials)){
 
+
         if (auth()->user()->status == false){
           Auth::logout();
           return back()
           ->withErrors(['identy' => 'Su usuario no se encuentra activo.'])
           ->withInput(request(['identy']));
         }
+
+        $password = request()->password;
+        $username = request()->identy;
+
+        $data = [
+          'grant_type' => 'password',
+          'client_id' => $this->passport_client_id,
+          'client_secret' =>  $this->passport_client_secret,
+          'username' => $username,
+          'password' => $password,
+          'scope' => ''
+        ];
+
+
+        $ch   = curl_init($this->url.'/oauth/token');
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+
+        $result         = curl_exec($ch);
+        $myArray        = json_decode($result);;
+
+        $user = User::find(auth()->user()->id);
+        $user->token = $myArray->access_token;
+        // $user = $user->status = 1;
+        $user->update();
 
         return redirect()->route('home');
 

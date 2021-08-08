@@ -11,15 +11,18 @@ class User extends Authenticatable
 {
     use HasApiTokens, Notifiable;
 
-    use Notifiable;
 
+    public function findForPassport($identy)
+    {
+        return $this->where('identy', $identy)->first();
+    }
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'identy', 'status'
+        'name', 'email', 'password', 'identy', 'token', 'status'
     ];
 
     /**
