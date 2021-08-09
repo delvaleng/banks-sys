@@ -2452,17 +2452,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {};
@@ -40077,42 +40066,38 @@ var render = function() {
     _vm._v(" "),
     _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-md-12 col-md-offset-1" }, [
-        _c("div", { staticClass: "panel panel-default" }, [
-          _c(
-            "div",
-            { staticClass: "panel-body" },
-            [
-              _c("br"),
-              _vm._v(" "),
-              _c("br"),
-              _vm._v(" "),
-              _c("br"),
-              _vm._v(" "),
-              _c(
-                "v-snackbar",
-                {
-                  attrs: {
-                    timeout: -1,
-                    value: true,
-                    absolute: "",
-                    left: "",
-                    shaped: "",
-                    top: "",
-                    color: "success"
-                  }
-                },
-                [
-                  _vm._v("\n            Hola, Bienvenido!!"),
-                  _c("br"),
-                  _vm._v(
-                    "\n            Recuerda que para activar tu cuenta debes comunicarte con\n            nosotros.!\n          "
-                  )
-                ]
-              )
-            ],
-            1
-          )
-        ])
+        _c(
+          "div",
+          { staticClass: "panel panel-default" },
+          [
+            _c("br"),
+            _vm._v(" "),
+            _c("br"),
+            _vm._v(" "),
+            _c(
+              "v-snackbar",
+              {
+                attrs: {
+                  timeout: -1,
+                  value: true,
+                  absolute: "",
+                  left: "",
+                  shaped: "",
+                  top: "",
+                  color: "success"
+                }
+              },
+              [
+                _vm._v("\n                    Hola, Bienvenido!!"),
+                _c("br"),
+                _vm._v(
+                  "\n                    Recuerda que para activar tu cuenta debes comunicarte con\n                    nosotros.!\n                "
+                )
+              ]
+            )
+          ],
+          1
+        )
       ])
     ])
   ])
