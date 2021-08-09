@@ -57,9 +57,13 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
+                                <!-- <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
                                                    document.getElementById('logout-form').submit();">
                                     {{ __('Salir') }}
+                                </a> -->
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                  <i class="fas fa-sign-out-alt mr-2 text-gray-400"></i>
+                                  {{ __('Salir') }}
                                 </a>
 
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
@@ -76,6 +80,28 @@
         <main class="py-4">
             @yield('content')
         </main>
+
+        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">¿Desea Salir de la sesión?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+              <div class="modal-body">Seleccione "Salir" para salir de la oficina virtual.</div>
+              <div class="modal-footer">
+                <button class="btn btn-default" type="button" data-dismiss="modal">{{ __('Regresar') }}</button>
+                <a class="btn btn-danger" href="{{ route('logout') }}" onclick="event.preventDefault();
+                              document.getElementById('logout-form').submit();">{{ __('Salir') }}</a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
+              </div>
+            </div>
+          </div>
+        </div><!-- END Logout Modal-->
 
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}"></script>
