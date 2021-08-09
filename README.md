@@ -69,8 +69,8 @@ User:
 
 # Developer
 
-Gloribel Delgado
-Ingeniero de Sistemas
+    Gloribel Delgado,
+    Ingeniero de Sistemas
 
 
 
