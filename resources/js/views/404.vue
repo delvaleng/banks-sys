@@ -1,7 +1,29 @@
-
 <template>
-<div class="col-md-8">
-    <h1 class="display-3">Error 404</h1>
-    <p class="lead">.....</p>
-</div>
+  <center>
+    <h1>Not Found!</h1>
+    <p>
+      <a href="/home">Home</a>
+    </p>
+  </center>
 </template>
+
+<script>
+
+  export default {
+    name: 'NotFound'
+  }
+
+</script>
+
+<style scoped>
+
+  center {
+    margin: 15vw;
+  }
+
+  h1 {
+    color: var(--border);
+    font-size: 2em;
+  }
+
+</style>

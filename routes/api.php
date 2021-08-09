@@ -15,22 +15,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+  return $request->user();
 });
 
 Route::middleware(['auth:api'])->group(function () {
 
-  Route::get('getTpAccount', 'TpAccountController@index');
-  Route::get('getTpBanks', 'TpBanksController@index');
-
-  Route::get('myAccount', 'AccountOwnController@myAccount');
-  Route::get('accountlist', 'AccountOwnController@index');
-  Route::get('accountlistAll', 'AccountOwnController@list');
-
-
-
-  Route::post('/tranferOwn/create', 'TranferOwnController@create');
-  Route::post('/tranferOwn/list',    'TranferOwnController@index');
-
-
+  Route::get('getTpAccount',       'TpAccountController@index');
+  Route::get('getTpBanks',         'TpBanksController@index');
+  Route::get('account/me',         'AccountOwnController@me');
+  Route::get('account/get',        'AccountOwnController@get');
+  Route::get('account/other',      'AccountOwnController@other');
+  Route::post('/transfer/create',  'TranferOwnController@create');
+  Route::post('/transfer/list',    'TranferOwnController@index');
 });

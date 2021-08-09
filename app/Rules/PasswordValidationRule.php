@@ -28,7 +28,7 @@ class PasswordValidationRule implements Rule
     public function passes($attribute, $value)
     {
         $user = User::where('identy', request()->input('identy'))->first();
-        if(Hash::check($value, $user->password)) {
+        if (Hash::check($value, $user->password)) {
             return true;
         }
     }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -27,9 +28,8 @@ class AuthServiceProvider extends ServiceProvider
 
         // Passport::routes();
 
-        Passport::routes(function($router){
-          $router->forAccessTokens();
+        Passport::routes(function ($router) {
+            $router->forAccessTokens();
         });
-
     }
 }

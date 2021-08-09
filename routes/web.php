@@ -15,7 +15,7 @@ use App\User;
 */
 
 Route::get('/', function () {
-    return view('home');
+  return view('home');
 });
 
 Auth::routes();
@@ -23,21 +23,14 @@ Auth::routes();
 Route::get('/', 'HomeController@index')->name('home');
 
 Route::get('/verify/{email}', function () {
-    $user = User::where('email',request()->email )->first();
-    $user->status = true;
-    $user->update();
-    return redirect()->route('login')
+  $user = User::where('email', request()->email)->first();
+  $user->status = true;
+  $user->update();
+  return redirect()->route('login')
     ->withErrors(['identy' => 'Su usuario se activo exitosamente.'])
     ->withInput(request(['identy']));
-
 });
 
-Route::get('{slug?}', function(){
+Route::get('{slug?}', function () {
   return view('home');
 });
-
-
-
-
-// Route::resource('AccountOwnController@index')->name('account');
-// Route::resource('TpAccountController@index')->name('tpaccount');

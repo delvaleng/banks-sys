@@ -1,30 +1,21 @@
 <template>
-<div id="app">
+  <div id="app">
     <v-app light>
-
-        <Navbar />
-        <v-main style="padding-left:250px;">
-            <router-view></router-view>
-        </v-main>
+      <Navbar />
+      <v-main style="padding-left: 250px">
+        <router-view></router-view>
+      </v-main>
     </v-app>
-</div>
+  </div>
 </template>
 
 <script>
-import Navbar from './Navbar';
+import Navbar from "./Navbar";
 
 export default {
-    name: 'App',
-
-    components: {
-        Navbar,
-    },
-
-    data: () => ({
-        drawer: false,
-    }),
-    methods: {
-
-    }
+  name: "App",
+  components: {
+    Navbar,
+  },
 };
 </script>

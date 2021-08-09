@@ -29,6 +29,5 @@ class TpBanks extends Model
    *
    * @var array
    */
-  public static $rules = [
-  ];
+  public static $rules = [];
 }
