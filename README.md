@@ -1,4 +1,4 @@
-# [Sistema de transacciones bancarias en línea]
+# Sistema de transacciones bancarias en línea
 
 ----------
 
