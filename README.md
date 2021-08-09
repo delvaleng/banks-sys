@@ -43,12 +43,16 @@ Start the local development server
     php artisan serve
 
 
-   # build CSS and JS assets
+   # Vue 
+   
+        npm install
+        npm install --global cross-env
+        npm install --no-bin-links
+        
         npm run dev o npm run watch
-    # or, if you prefer minified files
         npm run prod
      You can now access the server at http://localhost:8000 o http://localhost:3000
-     
+
      
 # Testing API
 
