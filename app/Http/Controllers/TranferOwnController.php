@@ -10,21 +10,48 @@ use Illuminate\Support\Facades\DB;
 
 class TranferOwnController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index(Request $request)
     {
+      $destino = AccountOwn::select('id')->where('id_user', auth()->id())->get();
+      $ids = array();
 
+      foreach ($destino as $key) {
+        array_push($ids,$key->id);
+      }
+
+
+      $tranferOwn = TranferOwn::select([
+        'transfer_own.id_user',
+        'destino.id_user as id_user_destino',
+
+        'id_account_own_origen',
+        'origen.n_account as n_account_origen',
+
+        'id_account_own_destino',
+        'destino.n_account as n_account_destino',
+
+        'mount',
+        'mount_prev',
+        'mount_next',
+        'n_transfer',
+      ]);
+
+      $tranferOwn = $tranferOwn->join('account_own as origen',  'origen.id',  '=', 'transfer_own.id_account_own_origen');
+      $tranferOwn = $tranferOwn->join('account_own as destino', 'destino.id',  '=', 'transfer_own.id_account_own_destino');
+      $tranferOwn = $tranferOwn->where('transfer_own.id_user', auth()->id());
+      // $tranferOwn = $tranferOwn->OrwhereIn('transfer_own.id_account_own_destino', $ids);
+
+      if($request->id_account_own_origen){
+        $tranferOwn = $tranferOwn->where('transfer_own.id_account_own_origen', $request->id_account_own_origen);
+      }
+      $tranferOwn = $tranferOwn->get();
+
+      return response()->json([
+         "tranferOwn" => $tranferOwn
+      ],200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create(Request $request)
     {
 
@@ -47,12 +74,14 @@ class TranferOwnController extends Controller
         $destino->update();
 
         $tranferOwn = new TranferOwn();
+        $tranferOwn->id_user = auth()->id();
         $tranferOwn->id_account_own_origen = $request->origen{'id'};
         $tranferOwn->id_account_own_destino = $request->destino{'id'};
         $tranferOwn->mount = $request->cost;
         $tranferOwn->n_transfer = rand(100000,999999);
         $tranferOwn->mount_prev = $mount_prev;
         $tranferOwn->mount_next = $origenResto;
+        $tranferOwn->status = true;
         $tranferOwn->save();
 
 
@@ -76,59 +105,4 @@ class TranferOwnController extends Controller
 
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

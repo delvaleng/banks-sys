@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\TpAccount;
+use App\Models\TpBanks;
 
-class TpAccountController extends Controller
+class TpBanksController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,9 +14,9 @@ class TpAccountController extends Controller
      */
     public function index(Request $request)
     {
-      $tpaccount = TpAccount::get();
+      $tpbanks = TpBanks::get();
       return response()->json([
-         "tpaccount" => $tpaccount
+         "tpbanks" => $tpbanks
       ],200);
     }
 

@@ -14,7 +14,7 @@ class AlterRemenberTokenToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-          $table->text('token', 500)->after('password');
+          $table->text('token', 500)->after('password')->nullable();
 
         });
     }

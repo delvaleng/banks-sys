@@ -2,7 +2,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\User;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,6 +21,16 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/', 'HomeController@index')->name('home');
+
+Route::get('/verify/{email}', function () {
+    $user = User::where('email',request()->email )->first();
+    $user->status = true;
+    $user->update();
+    return redirect()->route('login')
+    ->withErrors(['identy' => 'Su usuario se activo exitosamente.'])
+    ->withInput(request(['identy']));
+
+});
 
 Route::get('{slug?}', function(){
   return view('home');

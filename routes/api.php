@@ -14,31 +14,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::group([
-//     'prefix' => 'auth'
-// ], function () {
-//     Route::post('login', 'AuthController@login');
-//     Route::post('signup', 'AuthController@signUp');
-//
-//     Route::group([
-//       'middleware' => 'auth:api'
-//     ], function() {
-//         Route::get('logout', 'AuthController@logout');
-//         Route::get('user', 'AuthController@user');
-//         Route::get('accountlist', 'AccountOwnController@index');
-//
-//     });
-// });
-
-
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
 Route::middleware(['auth:api'])->group(function () {
 
+  Route::get('getTpAccount', 'TpAccountController@index');
+  Route::get('getTpBanks', 'TpBanksController@index');
+
+  Route::get('myAccount', 'AccountOwnController@myAccount');
   Route::get('accountlist', 'AccountOwnController@index');
+  Route::get('accountlistAll', 'AccountOwnController@list');
+
+
+
   Route::post('/tranferOwn/create', 'TranferOwnController@create');
+  Route::post('/tranferOwn/list',    'TranferOwnController@index');
 
 
 });

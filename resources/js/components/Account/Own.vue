@@ -1,38 +1,46 @@
 <template>
-<v-card height="100%">
-    <v-tabs fixed-tabs>
-        <v-tab>
-            <v-icon left small>
-                mdi-account
-            </v-icon>
-            Cuentas Propias
-        </v-tab>
-        <v-tab>
-            <v-icon left small>
-                mdi-account-group
-            </v-icon>
-            Cuentas de terceros
-        </v-tab>
-        <v-tab-item class="pa-4">
-          <AccountOwn/>
-        </v-tab-item>
+<div>
+    <p align="justify" class="font-italic font-weight-bold pl-4">
+        <br>
+        Realiza transferencias entre tus cuentas de forma rápida y efectiva.
+    </p>
+    <v-form ref="formAccountOwn">
+        <v-row class="ma-1">
+            <v-col cols="12" md="12">
+                <v-alert :type="alert1.type" :value="alert" dense text>
+                    {{ alert1.msg }}
+                </v-alert>
+                <v-progress-linear v-show="alertProgress" indeterminate color="green"></v-progress-linear>
+            </v-col>
 
-        <v-tab-item class="pa-4">
-          <AccountOther/>
-        </v-tab-item>
-    </v-tabs>
-</v-card>
+            <v-col cols="12" md="6">
+                <v-select dense placeholder="Cuenta Origen" label="Cuenta Origen" :items="accounts" item-text="n_account" item-value="id" return-object  v-model="formAccountOwn.origen" :rules="rules.accountown.origen">
+                </v-select>
+            </v-col>
+            <v-col cols="12" md="6">
+            </v-col>
+            <v-col cols="12" md="6">
+                <v-select dense placeholder="Cuenta Destino" label="Cuenta Destino" :items="accounts" item-text="n_account" item-value="id" return-object v-model="formAccountOwn.destino" :rules="rules.accountown.destino">
+                </v-select>
+            </v-col>
+
+            <v-col md="6" cols="12">
+                <v-text-field v-model="formAccountOwn.costFormat" :rules="rules.accountown.costFormat" label="Monto a tranferir" placeholder="Monto a tranferir" @keypress="isNumberKey($event)" @blur="formatCost($event)" dense>
+                </v-text-field>
+            </v-col>
+
+            <v-col md="4" offset="8" cols="12" class="text-center">
+                <v-btn color="green" dark block @click="tranferir()">
+                    Tranferir
+                </v-btn>
+            </v-col>
+        </v-row>
+    </v-form>
+</div>
 </template>
 <script>
-import AccountOwn from '../components/Account/Own';
-import AccountOther from '../components/Account/Other';
-
-
 export default {
-  components: {
-      AccountOwn,
-      AccountOther
-  },
+  name: "Own",
   data() {
     return {
         token: null,
@@ -51,12 +59,6 @@ export default {
             origen: null,
             destino: null,
         },
-        formAccountOwnOther: {
-            cost: null,
-            costFormat: null,
-            origen: null,
-            destino: null,
-        },
         rules: {
             accountown: {
                 cost: [(v) => !!v || "Monto es requerido."],
@@ -64,12 +66,6 @@ export default {
                 origen: [(v) => !!v || "Cuenta de origen es requerida."],
                 destino: [(v) => !!v || "Cuenta de destino es requerida."],
             },
-            accountownother: {
-                cost: [(v) => !!v || "Monto es requerido."],
-                costFormat: [(v) => !!v || "Monto es requerido."],
-                origen: [(v) => !!v || "Cuenta de origen es requerida."],
-                destino: [(v) => !!v || "Cuenta de destino es requerida."],
-            }
         }
     }
   },

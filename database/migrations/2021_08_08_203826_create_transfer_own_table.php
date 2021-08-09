@@ -17,15 +17,14 @@ class CreateTransferOwnTable extends Migration
             $table->id();
             $table->bigInteger('id_account_own_origen')->unsigned();
             $table->bigInteger('id_account_own_destino')->unsigned();
-
+            $table->bigInteger('id_user')->unsigned();
             $table->double('mount')->nullable();
             $table->double('mount_prev')->nullable();
             $table->double('mount_next')->nullable();
-
             $table->string('n_transfer')->nullable();
-
             $table->boolean('status')->nullable()->default(false);
             $table->timestamps();
+            $table->foreign('id_user')->references('id')->on('users');
             $table->foreign('id_account_own_origen')->references('id')->on('account_own');
             $table->foreign('id_account_own_destino')->references('id')->on('account_own');
 

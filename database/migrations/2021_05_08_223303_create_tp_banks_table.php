@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTpAccountTable extends Migration
+class CreateTpBanksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,7 @@ class CreateTpAccountTable extends Migration
      */
     public function up()
     {
-
-        Schema::create('tp_account', function (Blueprint $table) {
+        Schema::create('tp_banks', function (Blueprint $table) {
           $table->id();
           $table->string('name');
           $table->timestamps();
@@ -28,7 +27,6 @@ class CreateTpAccountTable extends Migration
      */
     public function down()
     {
-      Schema::dropIfExists('tp_account');
-
+        Schema::dropIfExists('tp_banks');
     }
 }

@@ -18,6 +18,7 @@ class CreateAccountOwnTable extends Migration
 
           $table->bigInteger('id_user')->unsigned();
           $table->bigInteger('id_tp_account')->unsigned();
+          $table->bigInteger('id_tp_banks')->unsigned();
 
           $table->string('n_account')->nullable();
           $table->double('balance')->nullable();
@@ -26,6 +27,8 @@ class CreateAccountOwnTable extends Migration
           $table->timestamps();
           $table->foreign('id_user')->references('id')->on('users');
           $table->foreign('id_tp_account')->references('id')->on('tp_account');
+          $table->foreign('id_tp_banks')->references('id')->on('tp_banks');
+
         });
     }
 

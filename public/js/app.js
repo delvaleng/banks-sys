@@ -1834,6 +1834,419 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Account/Other.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Account/Other.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  name: "Other",
+  components: {},
+  data: function data() {
+    var _ref;
+
+    return _ref = {
+      token: null,
+      id: null,
+      alert: false,
+      alertProgress: false,
+      alert1: {
+        type: 'warning',
+        msg: null
+      },
+      accounts: [],
+      accountsOther: []
+    }, _defineProperty(_ref, "accountsOther", []), _defineProperty(_ref, "formAccountOther", {
+      cost: null,
+      costFormat: null,
+      origen: null,
+      destino: null
+    }), _defineProperty(_ref, "rules", {
+      accountother: {
+        cost: [function (v) {
+          return !!v || "Monto es requerido.";
+        }],
+        costFormat: [function (v) {
+          return !!v || "Monto es requerido.";
+        }],
+        origen: [function (v) {
+          return !!v || "Cuenta de origen es requerida.";
+        }],
+        destino: [function (v) {
+          return !!v || "Cuenta de destino es requerida.";
+        }]
+      }
+    }), _ref;
+  },
+  mounted: function mounted() {
+    this.token = document.querySelector("meta[name='user-token']").getAttribute('content');
+    this.getAccount();
+    this.getAccountOther();
+  },
+  methods: {
+    getAccountOther: function getAccountOther() {
+      var _this = this;
+
+      axios({
+        method: "get",
+        url: "/api/accountlistAll",
+        data: {},
+        headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer " + this.token
+        }
+      }).then(function (response) {
+        _this.accountsOther = response.data.account;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    getAccount: function getAccount() {
+      var _this2 = this;
+
+      axios({
+        method: "get",
+        url: "/api/accountlist",
+        data: {},
+        headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer " + this.token
+        }
+      }).then(function (response) {
+        _this2.accounts = response.data.account;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    isNumberKey: function isNumberKey(evt) {
+      evt = evt ? evt : window.event;
+      var charCode = evt.which ? evt.which : evt.keyCode;
+
+      if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 46) {
+        evt.preventDefault();
+      } else {
+        return true;
+      }
+    },
+    formatCost: function formatCost(e) {
+      this.formAccountOther.costFormat = new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP'
+      }).format(e.target.value);
+      this.formAccountOther.cost = e.target.value;
+    },
+    tranferir: function tranferir() {
+      var _this3 = this;
+
+      this.alert = false;
+
+      if (this.$refs.formAccountOther.validate()) {
+        if (this.formAccountOther.cost <= 0) {
+          this.formAccountOther.costFormat = null;
+          this.formAccountOther.cost = null;
+          this.alert = true;
+          this.alert1.type = 'error';
+          this.alert1.msg = 'El monto a transferir debe ser válido.';
+          this.alertProgress = false;
+          setTimeout(function () {
+            _this3.alert = false;
+          }, 5000);
+        } else if (this.formAccountOther.cost > this.formAccountOther.origen.balance) {
+          this.formAccountOther.costFormat = null;
+          this.formAccountOther.cost = null;
+          this.alert = true;
+          this.alert1.type = 'error';
+          this.alert1.msg = 'Su saldo es insuficiente para realizar esa operación.';
+          this.alertProgress = false;
+          setTimeout(function () {
+            _this3.alert = false;
+          }, 5000);
+        } else {
+          this.alertProgress = true;
+          axios({
+            method: "post",
+            url: "/api/tranferOwn/create",
+            data: this.formAccountOther,
+            headers: {
+              "Accept": "application/json",
+              "Authorization": "Bearer " + this.token
+            }
+          }).then(function (response) {
+            if (response.data) {
+              if (response.data.status == true) {
+                _this3.getAccount();
+
+                _this3.$refs.formAccountOther.reset();
+              }
+
+              _this3.alert = true;
+              _this3.alert1.type = response.data.status ? 'success' : 'error';
+              _this3.alert1.msg = response.data.msg;
+              _this3.alertProgress = false;
+              setTimeout(function () {
+                _this3.alert = false;
+              }, 10000);
+            }
+          })["catch"](function (error) {
+            console.log(error);
+          });
+        }
+      }
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Account/Own.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Account/Own.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  name: "Own",
+  data: function data() {
+    return {
+      token: null,
+      id: null,
+      alert: false,
+      alertProgress: false,
+      alert1: {
+        type: 'warning',
+        msg: null
+      },
+      accounts: [],
+      accountsOther: [],
+      formAccountOwn: {
+        cost: null,
+        costFormat: null,
+        origen: null,
+        destino: null
+      },
+      rules: {
+        accountown: {
+          cost: [function (v) {
+            return !!v || "Monto es requerido.";
+          }],
+          costFormat: [function (v) {
+            return !!v || "Monto es requerido.";
+          }],
+          origen: [function (v) {
+            return !!v || "Cuenta de origen es requerida.";
+          }],
+          destino: [function (v) {
+            return !!v || "Cuenta de destino es requerida.";
+          }]
+        }
+      }
+    };
+  },
+  mounted: function mounted() {
+    this.token = document.querySelector("meta[name='user-token']").getAttribute('content');
+    this.getAccount();
+  },
+  methods: {
+    getAccount: function getAccount() {
+      var _this = this;
+
+      axios({
+        method: "get",
+        url: "/api/accountlist",
+        data: {},
+        headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer " + this.token
+        }
+      }).then(function (response) {
+        _this.accounts = response.data.account;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    isNumberKey: function isNumberKey(evt) {
+      evt = evt ? evt : window.event;
+      var charCode = evt.which ? evt.which : evt.keyCode;
+
+      if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 46) {
+        evt.preventDefault();
+      } else {
+        return true;
+      }
+    },
+    formatCost: function formatCost(e) {
+      this.formAccountOwn.costFormat = new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP'
+      }).format(e.target.value);
+      this.formAccountOwn.cost = e.target.value;
+    },
+    tranferir: function tranferir() {
+      var _this2 = this;
+
+      this.alert = false;
+
+      if (this.$refs.formAccountOwn.validate()) {
+        if (this.formAccountOwn.origen.id == this.formAccountOwn.destino.id) {
+          this.formAccountOwn.destino = null;
+          this.alert = true;
+          this.alert1.type = 'error';
+          this.alert1.msg = 'Las cuentas de origen y destino deben ser diferentes.';
+          this.alertProgress = false;
+          setTimeout(function () {
+            _this2.alert = false;
+          }, 5000);
+        } else if (this.formAccountOwn.cost <= 0) {
+          this.formAccountOwn.costFormat = null;
+          this.formAccountOwn.cost = null;
+          this.alert = true;
+          this.alert1.type = 'error';
+          this.alert1.msg = 'El monto a transferir debe ser válido.';
+          this.alertProgress = false;
+          setTimeout(function () {
+            _this2.alert = false;
+          }, 5000);
+        } else if (this.formAccountOwn.cost > this.formAccountOwn.origen.balance) {
+          this.formAccountOwn.costFormat = null;
+          this.formAccountOwn.cost = null;
+          this.alert = true;
+          this.alert1.type = 'error';
+          this.alert1.msg = 'Su saldo es insuficiente para realizar esa operación.';
+          this.alertProgress = false;
+          setTimeout(function () {
+            _this2.alert = false;
+          }, 5000);
+        } else {
+          this.alertProgress = true;
+          axios({
+            method: "post",
+            url: "/api/tranferOwn/create",
+            data: this.formAccountOwn,
+            headers: {
+              "Accept": "application/json",
+              "Authorization": "Bearer " + this.token
+            }
+          }).then(function (response) {
+            if (response.data) {
+              if (response.data.status == true) {
+                _this2.getAccount();
+
+                _this2.$refs.formAccountOwn.reset();
+              }
+
+              _this2.alert = true;
+              _this2.alert1.type = response.data.status ? 'success' : 'error';
+              _this2.alert1.msg = response.data.msg;
+              _this2.alertProgress = false;
+              setTimeout(function () {
+                _this2.alert = false;
+              }, 10000);
+            }
+          })["catch"](function (error) {
+            console.log(error);
+          });
+        }
+      }
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/App.vue?vue&type=script&lang=js&":
 /*!**********************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/App.vue?vue&type=script&lang=js& ***!
@@ -1970,6 +2383,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {};
@@ -2036,9 +2453,156 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   mounted: function mounted() {
-    console.log('Component resumen.');
+    this.token = document.querySelector("meta[name='user-token']").getAttribute('content');
+    this.getAccountList();
+    this.getTransacciones();
+  },
+  methods: {
+    getColor: function getColor(status) {
+      if (status == false) return 'red';else return 'green';
+    },
+    getFormat: function getFormat(balance) {
+      return new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP'
+      }).format(balance);
+    },
+    getAccountList: function getAccountList() {
+      var _this = this;
+
+      axios({
+        method: "get",
+        url: "/api/myAccount",
+        data: {},
+        headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer " + this.token
+        }
+      }).then(function (response) {
+        _this.accounts = response.data.account;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    getTransacciones: function getTransacciones(id) {
+      var _this2 = this;
+
+      this.transacciones = [];
+      axios({
+        method: "post",
+        url: "/api/tranferOwn/list",
+        data: {
+          id_account_own_origen: id
+        },
+        headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer " + this.token
+        }
+      }).then(function (response) {
+        _this2.transacciones = response.data.tranferOwn;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+  },
+  data: function data() {
+    return {
+      token: null,
+      accounts: [],
+      transacciones: [],
+      search: '',
+      search2: '',
+      headers: [{
+        text: 'N° de Cuenta',
+        value: 'n_account'
+      }, {
+        text: 'Tipo de Cuenta',
+        value: 'tp_account'
+      }, {
+        text: 'Tipo de Banco',
+        value: 'tp_banks'
+      }, {
+        text: 'Estatus',
+        value: 'status',
+        align: 'center'
+      }, {
+        text: 'Saldo',
+        value: 'balance',
+        align: 'right'
+      }, {
+        text: 'Transacciones',
+        value: 'id'
+      }],
+      headers2: [{
+        text: 'N° Transaccion',
+        value: 'n_transfer'
+      }, {
+        text: 'Cta Origen',
+        value: 'n_account_origen'
+      }, {
+        text: 'Cta Destino',
+        value: 'n_account_destino'
+      }, {
+        text: 'Monto Previo',
+        value: 'mount_prev',
+        align: 'right'
+      }, {
+        text: 'Monto Tranferido',
+        value: 'mount',
+        align: 'right'
+      }, {
+        text: 'Saldo',
+        value: 'mount_next',
+        align: 'right'
+      }]
+    };
   }
 });
 
@@ -2055,6 +2619,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _components_Account_Own__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/Account/Own */ "./resources/js/components/Account/Own.vue");
+/* harmony import */ var _components_Account_Other__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/Account/Other */ "./resources/js/components/Account/Other.vue");
 //
 //
 //
@@ -2080,69 +2646,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  components: {
+    AccountOwn: _components_Account_Own__WEBPACK_IMPORTED_MODULE_0__.default,
+    AccountOther: _components_Account_Other__WEBPACK_IMPORTED_MODULE_1__.default
+  },
   data: function data() {
     return {
       token: null,
@@ -2154,7 +2664,14 @@ __webpack_require__.r(__webpack_exports__);
         msg: null
       },
       accounts: [],
+      accountsOther: [],
       formAccountOwn: {
+        cost: null,
+        costFormat: null,
+        origen: null,
+        destino: null
+      },
+      formAccountOwnOther: {
         cost: null,
         costFormat: null,
         origen: null,
@@ -2174,14 +2691,26 @@ __webpack_require__.r(__webpack_exports__);
           destino: [function (v) {
             return !!v || "Cuenta de destino es requerida.";
           }]
+        },
+        accountownother: {
+          cost: [function (v) {
+            return !!v || "Monto es requerido.";
+          }],
+          costFormat: [function (v) {
+            return !!v || "Monto es requerido.";
+          }],
+          origen: [function (v) {
+            return !!v || "Cuenta de origen es requerida.";
+          }],
+          destino: [function (v) {
+            return !!v || "Cuenta de destino es requerida.";
+          }]
         }
       }
     };
   },
   mounted: function mounted() {
-    console.log('Component transaDcciones.');
     this.token = document.querySelector("meta[name='user-token']").getAttribute('content');
-    this.id = document.querySelector("meta[name='user-id']").getAttribute('content');
     this.getAccount();
   },
   methods: {
@@ -2223,7 +2752,6 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       this.alert = false;
-      console.log(this.formAccountOwn);
 
       if (this.$refs.formAccountOwn.validate()) {
         if (this.formAccountOwn.origen.id == this.formAccountOwn.destino.id) {
@@ -2266,8 +2794,6 @@ __webpack_require__.r(__webpack_exports__);
               "Authorization": "Bearer " + this.token
             }
           }).then(function (response) {
-            console.log(response.data);
-
             if (response.data) {
               if (response.data.status == true) {
                 _this2.getAccount();
@@ -38277,6 +38803,84 @@ module.exports = function (list, options) {
 
 /***/ }),
 
+/***/ "./resources/js/components/Account/Other.vue":
+/*!***************************************************!*\
+  !*** ./resources/js/components/Account/Other.vue ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _Other_vue_vue_type_template_id_103eed33___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Other.vue?vue&type=template&id=103eed33& */ "./resources/js/components/Account/Other.vue?vue&type=template&id=103eed33&");
+/* harmony import */ var _Other_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Other.vue?vue&type=script&lang=js& */ "./resources/js/components/Account/Other.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__.default)(
+  _Other_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
+  _Other_vue_vue_type_template_id_103eed33___WEBPACK_IMPORTED_MODULE_0__.render,
+  _Other_vue_vue_type_template_id_103eed33___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Account/Other.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Account/Own.vue":
+/*!*************************************************!*\
+  !*** ./resources/js/components/Account/Own.vue ***!
+  \*************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _Own_vue_vue_type_template_id_4bf65969___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Own.vue?vue&type=template&id=4bf65969& */ "./resources/js/components/Account/Own.vue?vue&type=template&id=4bf65969&");
+/* harmony import */ var _Own_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Own.vue?vue&type=script&lang=js& */ "./resources/js/components/Account/Own.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__.default)(
+  _Own_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
+  _Own_vue_vue_type_template_id_4bf65969___WEBPACK_IMPORTED_MODULE_0__.render,
+  _Own_vue_vue_type_template_id_4bf65969___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Account/Own.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
 /***/ "./resources/js/components/App.vue":
 /*!*****************************************!*\
   !*** ./resources/js/components/App.vue ***!
@@ -38509,6 +39113,38 @@ component.options.__file = "resources/js/views/Transacciones.vue"
 
 /***/ }),
 
+/***/ "./resources/js/components/Account/Other.vue?vue&type=script&lang=js&":
+/*!****************************************************************************!*\
+  !*** ./resources/js/components/Account/Other.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Other_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Other.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Account/Other.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Other_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Account/Own.vue?vue&type=script&lang=js&":
+/*!**************************************************************************!*\
+  !*** ./resources/js/components/Account/Own.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Own_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Own.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Account/Own.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Own_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
+
+/***/ }),
+
 /***/ "./resources/js/components/App.vue?vue&type=script&lang=js&":
 /*!******************************************************************!*\
   !*** ./resources/js/components/App.vue?vue&type=script&lang=js& ***!
@@ -38586,6 +39222,40 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Transacciones_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Transacciones.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/views/Transacciones.vue?vue&type=script&lang=js&");
  /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Transacciones_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Account/Other.vue?vue&type=template&id=103eed33&":
+/*!**********************************************************************************!*\
+  !*** ./resources/js/components/Account/Other.vue?vue&type=template&id=103eed33& ***!
+  \**********************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Other_vue_vue_type_template_id_103eed33___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Other_vue_vue_type_template_id_103eed33___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Other_vue_vue_type_template_id_103eed33___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Other.vue?vue&type=template&id=103eed33& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Account/Other.vue?vue&type=template&id=103eed33&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Account/Own.vue?vue&type=template&id=4bf65969&":
+/*!********************************************************************************!*\
+  !*** ./resources/js/components/Account/Own.vue?vue&type=template&id=4bf65969& ***!
+  \********************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Own_vue_vue_type_template_id_4bf65969___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Own_vue_vue_type_template_id_4bf65969___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Own_vue_vue_type_template_id_4bf65969___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Own.vue?vue&type=template&id=4bf65969& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Account/Own.vue?vue&type=template&id=4bf65969&");
+
 
 /***/ }),
 
@@ -38687,6 +39357,452 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Transacciones_vue_vue_type_template_id_39b31724___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Transacciones_vue_vue_type_template_id_39b31724___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Transacciones.vue?vue&type=template&id=39b31724& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/views/Transacciones.vue?vue&type=template&id=39b31724&");
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Account/Other.vue?vue&type=template&id=103eed33&":
+/*!*************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Account/Other.vue?vue&type=template&id=103eed33& ***!
+  \*************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _vm._m(0),
+      _vm._v(" "),
+      _c(
+        "v-form",
+        { ref: "formAccountOther" },
+        [
+          _c(
+            "v-row",
+            { staticClass: "ma-1" },
+            [
+              _c(
+                "v-col",
+                { attrs: { cols: "12", md: "12" } },
+                [
+                  _c(
+                    "v-alert",
+                    {
+                      attrs: {
+                        type: _vm.alert1.type,
+                        value: _vm.alert,
+                        dense: "",
+                        text: ""
+                      }
+                    },
+                    [
+                      _vm._v(
+                        "\r\n                    " +
+                          _vm._s(_vm.alert1.msg) +
+                          "\r\n                "
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c("v-progress-linear", {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.alertProgress,
+                        expression: "alertProgress"
+                      }
+                    ],
+                    attrs: { indeterminate: "", color: "green" }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-col",
+                { attrs: { cols: "12", md: "6" } },
+                [
+                  _c("v-select", {
+                    attrs: {
+                      "single-line": "",
+                      dense: "",
+                      placeholder: "Cuenta Origen",
+                      label: "Cuenta Origen",
+                      items: _vm.accounts,
+                      "item-text": "n_account",
+                      "item-value": "id",
+                      "return-object": "",
+                      rules: _vm.rules.accountother.origen
+                    },
+                    on: {
+                      input: function($event) {
+                        return _vm.getAccount()
+                      }
+                    },
+                    model: {
+                      value: _vm.formAccountOther.origen,
+                      callback: function($$v) {
+                        _vm.$set(_vm.formAccountOther, "origen", $$v)
+                      },
+                      expression: "formAccountOther.origen"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c("v-col", { attrs: { cols: "12", md: "6" } }),
+              _vm._v(" "),
+              _c(
+                "v-col",
+                { attrs: { cols: "12", md: "6" } },
+                [
+                  _c("v-select", {
+                    attrs: {
+                      "single-line": "",
+                      dense: "",
+                      placeholder: "Cuenta Destino",
+                      label: "Cuenta Destino",
+                      items: _vm.accountsOther,
+                      "item-text": "n_account",
+                      "item-value": "id",
+                      "return-object": "",
+                      rules: _vm.rules.accountother.destino
+                    },
+                    on: {
+                      input: function($event) {
+                        return _vm.getAccount()
+                      }
+                    },
+                    model: {
+                      value: _vm.formAccountOther.destino,
+                      callback: function($$v) {
+                        _vm.$set(_vm.formAccountOther, "destino", $$v)
+                      },
+                      expression: "formAccountOther.destino"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-col",
+                { attrs: { md: "6", cols: "12" } },
+                [
+                  _c("v-text-field", {
+                    attrs: {
+                      rules: _vm.rules.accountother.costFormat,
+                      label: "Monto a tranferir",
+                      placeholder: "Monto a tranferir",
+                      dense: ""
+                    },
+                    on: {
+                      keypress: function($event) {
+                        return _vm.isNumberKey($event)
+                      },
+                      blur: function($event) {
+                        return _vm.formatCost($event)
+                      }
+                    },
+                    model: {
+                      value: _vm.formAccountOther.costFormat,
+                      callback: function($$v) {
+                        _vm.$set(_vm.formAccountOther, "costFormat", $$v)
+                      },
+                      expression: "formAccountOther.costFormat"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c("v-col", { attrs: { cols: "12", md: "6" } }),
+              _vm._v(" "),
+              _c(
+                "v-col",
+                {
+                  staticClass: "text-center",
+                  attrs: { md: "4", offset: "8", cols: "12" }
+                },
+                [
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { color: "green", dark: "", block: "" },
+                      on: {
+                        click: function($event) {
+                          return _vm.tranferir()
+                        }
+                      }
+                    },
+                    [
+                      _vm._v(
+                        "\r\n                    Tranferir\r\n                "
+                      )
+                    ]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "p",
+      {
+        staticClass: "font-italic font-weight-bold pl-4",
+        attrs: { align: "justify" }
+      },
+      [
+        _c("br"),
+        _vm._v(
+          "\r\n        Realiza transferencias a terceros de forma rápida y efectiva.\r\n    "
+        )
+      ]
+    )
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Account/Own.vue?vue&type=template&id=4bf65969&":
+/*!***********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Account/Own.vue?vue&type=template&id=4bf65969& ***!
+  \***********************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _vm._m(0),
+      _vm._v(" "),
+      _c(
+        "v-form",
+        { ref: "formAccountOwn" },
+        [
+          _c(
+            "v-row",
+            { staticClass: "ma-1" },
+            [
+              _c(
+                "v-col",
+                { attrs: { cols: "12", md: "12" } },
+                [
+                  _c(
+                    "v-alert",
+                    {
+                      attrs: {
+                        type: _vm.alert1.type,
+                        value: _vm.alert,
+                        dense: "",
+                        text: ""
+                      }
+                    },
+                    [
+                      _vm._v(
+                        "\r\n                    " +
+                          _vm._s(_vm.alert1.msg) +
+                          "\r\n                "
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c("v-progress-linear", {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.alertProgress,
+                        expression: "alertProgress"
+                      }
+                    ],
+                    attrs: { indeterminate: "", color: "green" }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-col",
+                { attrs: { cols: "12", md: "6" } },
+                [
+                  _c("v-select", {
+                    attrs: {
+                      dense: "",
+                      placeholder: "Cuenta Origen",
+                      label: "Cuenta Origen",
+                      items: _vm.accounts,
+                      "item-text": "n_account",
+                      "item-value": "id",
+                      "return-object": "",
+                      rules: _vm.rules.accountown.origen
+                    },
+                    model: {
+                      value: _vm.formAccountOwn.origen,
+                      callback: function($$v) {
+                        _vm.$set(_vm.formAccountOwn, "origen", $$v)
+                      },
+                      expression: "formAccountOwn.origen"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c("v-col", { attrs: { cols: "12", md: "6" } }),
+              _vm._v(" "),
+              _c(
+                "v-col",
+                { attrs: { cols: "12", md: "6" } },
+                [
+                  _c("v-select", {
+                    attrs: {
+                      dense: "",
+                      placeholder: "Cuenta Destino",
+                      label: "Cuenta Destino",
+                      items: _vm.accounts,
+                      "item-text": "n_account",
+                      "item-value": "id",
+                      "return-object": "",
+                      rules: _vm.rules.accountown.destino
+                    },
+                    model: {
+                      value: _vm.formAccountOwn.destino,
+                      callback: function($$v) {
+                        _vm.$set(_vm.formAccountOwn, "destino", $$v)
+                      },
+                      expression: "formAccountOwn.destino"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-col",
+                { attrs: { md: "6", cols: "12" } },
+                [
+                  _c("v-text-field", {
+                    attrs: {
+                      rules: _vm.rules.accountown.costFormat,
+                      label: "Monto a tranferir",
+                      placeholder: "Monto a tranferir",
+                      dense: ""
+                    },
+                    on: {
+                      keypress: function($event) {
+                        return _vm.isNumberKey($event)
+                      },
+                      blur: function($event) {
+                        return _vm.formatCost($event)
+                      }
+                    },
+                    model: {
+                      value: _vm.formAccountOwn.costFormat,
+                      callback: function($$v) {
+                        _vm.$set(_vm.formAccountOwn, "costFormat", $$v)
+                      },
+                      expression: "formAccountOwn.costFormat"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-col",
+                {
+                  staticClass: "text-center",
+                  attrs: { md: "4", offset: "8", cols: "12" }
+                },
+                [
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { color: "green", dark: "", block: "" },
+                      on: {
+                        click: function($event) {
+                          return _vm.tranferir()
+                        }
+                      }
+                    },
+                    [
+                      _vm._v(
+                        "\r\n                    Tranferir\r\n                "
+                      )
+                    ]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "p",
+      {
+        staticClass: "font-italic font-weight-bold pl-4",
+        attrs: { align: "justify" }
+      },
+      [
+        _c("br"),
+        _vm._v(
+          "\r\n        Realiza transferencias entre tus cuentas de forma rápida y efectiva.\r\n    "
+        )
+      ]
+    )
+  }
+]
+render._withStripped = true
+
 
 
 /***/ }),
@@ -38849,32 +39965,54 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container" }, [
-      _c("div", { staticClass: "row" }, [
-        _c("div", { staticClass: "col-md-8 col-md-offset-2" }, [
-          _c("div", { staticClass: "panel panel-default" }, [
-            _c("div", { staticClass: "panel-heading" }, [
-              _vm._v("Example Component")
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "panel-body" }, [
-              _vm._v(
-                "\n                    I'm an example component!\n\n\n\n                "
+  return _c("div", { staticClass: "container pa-2" }, [
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-8 col-md-offset-2" }, [
+        _c("div", { staticClass: "panel panel-default" }, [
+          _c("div", { staticClass: "panel-heading" }, [
+            _vm._v("Example Component")
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "panel-body" },
+            [
+              _c("br"),
+              _vm._v(" "),
+              _c("br"),
+              _vm._v(" "),
+              _c("br"),
+              _vm._v(" "),
+              _c(
+                "v-snackbar",
+                {
+                  attrs: {
+                    timeout: -1,
+                    value: true,
+                    absolute: "",
+                    left: "",
+                    shaped: "",
+                    top: "",
+                    color: "success"
+                  }
+                },
+                [
+                  _vm._v("\n                        Hola, Bienvenido!!"),
+                  _c("br"),
+                  _vm._v(
+                    "\n                        Recuerda que para activar tu cuenta debes comunicarte con nosotros.!\n                    "
+                  )
+                ]
               )
-            ])
-          ])
+            ],
+            1
+          )
         ])
       ])
     ])
-  }
-]
+  ])
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -38897,32 +40035,217 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container" }, [
-      _c("div", { staticClass: "row" }, [
-        _c("div", { staticClass: "col-md-8 col-md-offset-2" }, [
-          _c("div", { staticClass: "panel panel-default" }, [
-            _c("div", { staticClass: "panel-heading" }, [
-              _vm._v("Example Component")
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "panel-body" }, [
-              _vm._v(
-                "\n                    I'm an example component!\n                "
-              )
-            ])
+  return _c(
+    "v-card",
+    { staticClass: "pa-4", attrs: { height: "100%" } },
+    [
+      _c("div", { staticClass: "panel-heading font-weight-black" }, [
+        _vm._v("Resumen")
+      ]),
+      _vm._v(" "),
+      _c(
+        "v-card-title",
+        [
+          _c("v-text-field", {
+            attrs: {
+              dense: "",
+              "append-icon": "mdi-magnify",
+              label: "Búsqueda",
+              "single-line": "",
+              "hide-details": ""
+            },
+            model: {
+              value: _vm.search,
+              callback: function($$v) {
+                _vm.search = $$v
+              },
+              expression: "search"
+            }
+          }),
+          _vm._v(" "),
+          _c("v-spacer")
+        ],
+        1
+      ),
+      _vm._v(" "),
+      [
+        _c("v-data-table", {
+          staticClass: "elevation-1",
+          attrs: {
+            dense: "",
+            headers: _vm.headers,
+            search: _vm.search,
+            items: _vm.accounts,
+            "item-key": "name"
+          },
+          scopedSlots: _vm._u([
+            {
+              key: "item.status",
+              fn: function(ref) {
+                var item = ref.item
+                return [
+                  _c(
+                    "v-chip",
+                    {
+                      attrs: {
+                        color: _vm.getColor(item.status),
+                        dark: "",
+                        small: "",
+                        center: ""
+                      }
+                    },
+                    [
+                      _vm._v(
+                        "\n                    " +
+                          _vm._s(
+                            item.status == 1 ? "HABILITADA" : "INHABILITADA"
+                          ) +
+                          "\n                "
+                      )
+                    ]
+                  )
+                ]
+              }
+            },
+            {
+              key: "item.balance",
+              fn: function(ref) {
+                var item = ref.item
+                return [
+                  _vm._v(
+                    "\n                " +
+                      _vm._s(_vm.getFormat(item.balance)) +
+                      "\n            "
+                  )
+                ]
+              }
+            },
+            {
+              key: "item.id",
+              fn: function(ref) {
+                var item = ref.item
+                return [
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { small: "", text: "" },
+                      on: {
+                        click: function($event) {
+                          return _vm.getTransacciones(item.id)
+                        }
+                      }
+                    },
+                    [
+                      _c("v-icon", { attrs: { small: "" } }, [
+                        _vm._v("mdi-eye")
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "span",
+                        { staticClass: "text-decoration-none text-caption" },
+                        [_vm._v("Ver")]
+                      )
+                    ],
+                    1
+                  )
+                ]
+              }
+            }
           ])
-        ])
-      ])
-    ])
-  }
-]
+        })
+      ],
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
+      _c("div", { staticClass: "panel-heading font-weight-black " }, [
+        _vm._v("Detalles de las Transacciones")
+      ]),
+      _vm._v(" "),
+      _c(
+        "v-card-title",
+        [
+          _c("v-text-field", {
+            attrs: {
+              dense: "",
+              "append-icon": "mdi-magnify",
+              label: "Búsqueda",
+              "single-line": "",
+              "hide-details": ""
+            },
+            model: {
+              value: _vm.search2,
+              callback: function($$v) {
+                _vm.search2 = $$v
+              },
+              expression: "search2"
+            }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      [
+        _c("v-data-table", {
+          staticClass: "elevation-1",
+          attrs: {
+            dense: "",
+            headers: _vm.headers2,
+            search: _vm.search2,
+            items: _vm.transacciones,
+            "item-key": "name"
+          },
+          scopedSlots: _vm._u([
+            {
+              key: "item.mount_next",
+              fn: function(ref) {
+                var item = ref.item
+                return [
+                  _vm._v(
+                    "\n                " +
+                      _vm._s(_vm.getFormat(item.mount_next)) +
+                      "\n            "
+                  )
+                ]
+              }
+            },
+            {
+              key: "item.mount_prev",
+              fn: function(ref) {
+                var item = ref.item
+                return [
+                  _vm._v(
+                    "\n                " +
+                      _vm._s(_vm.getFormat(item.mount_prev)) +
+                      "\n            "
+                  )
+                ]
+              }
+            },
+            {
+              key: "item.mount",
+              fn: function(ref) {
+                var item = ref.item
+                return [
+                  _vm._v(
+                    "\n                " +
+                      _vm._s(_vm.getFormat(item.mount)) +
+                      "\n            "
+                  )
+                ]
+              }
+            }
+          ])
+        })
+      ]
+    ],
+    2
+  )
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -38970,250 +40293,14 @@ var render = function() {
               _c("v-icon", { attrs: { left: "", small: "" } }, [
                 _vm._v("\n                mdi-account-group\n            ")
               ]),
-              _vm._v("\n            Cuentas a Terceros\n        ")
+              _vm._v("\n            Cuentas de terceros\n        ")
             ],
             1
           ),
           _vm._v(" "),
-          _c(
-            "v-tab-item",
-            { staticClass: "pa-4" },
-            [
-              _c(
-                "p",
-                {
-                  staticClass: "font-italic font-weight-bold pl-4",
-                  attrs: { align: "justify" }
-                },
-                [
-                  _c("br"),
-                  _vm._v(
-                    "\n                Realiza transferencias entre tus cuentas de forma rápida y efectiva.\n            "
-                  )
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "v-form",
-                { ref: "formAccountOwn" },
-                [
-                  _c(
-                    "v-row",
-                    { staticClass: "ma-1" },
-                    [
-                      _c(
-                        "v-col",
-                        { attrs: { cols: "12", md: "12" } },
-                        [
-                          _c(
-                            "v-alert",
-                            {
-                              attrs: {
-                                type: _vm.alert1.type,
-                                value: _vm.alert,
-                                dense: "",
-                                text: ""
-                              }
-                            },
-                            [
-                              _vm._v(
-                                "\n                            " +
-                                  _vm._s(_vm.alert1.msg) +
-                                  "\n                        "
-                              )
-                            ]
-                          ),
-                          _vm._v(" "),
-                          _c("v-progress-linear", {
-                            directives: [
-                              {
-                                name: "show",
-                                rawName: "v-show",
-                                value: _vm.alertProgress,
-                                expression: "alertProgress"
-                              }
-                            ],
-                            attrs: { indeterminate: "", color: "green" }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "v-col",
-                        { attrs: { cols: "12", md: "6" } },
-                        [
-                          _c("v-autocomplete", {
-                            attrs: {
-                              dense: "",
-                              placeholder: "Cuenta Origen",
-                              label: "Cuenta Origen",
-                              items: _vm.accounts,
-                              "item-text": "n_account",
-                              "item-value": "id",
-                              "return-object": "",
-                              rules: _vm.rules.accountown.origen
-                            },
-                            on: {
-                              input: function($event) {
-                                return _vm.getAccount()
-                              }
-                            },
-                            model: {
-                              value: _vm.formAccountOwn.origen,
-                              callback: function($$v) {
-                                _vm.$set(_vm.formAccountOwn, "origen", $$v)
-                              },
-                              expression: "formAccountOwn.origen"
-                            }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "v-col",
-                        { attrs: { cols: "12", md: "6" } },
-                        [
-                          _c("v-autocomplete", {
-                            attrs: {
-                              dense: "",
-                              placeholder: "Cuenta Destino",
-                              label: "Cuenta Destino",
-                              items: _vm.accounts,
-                              "item-text": "n_account",
-                              "item-value": "id",
-                              "return-object": "",
-                              rules: _vm.rules.accountown.destino
-                            },
-                            on: {
-                              input: function($event) {
-                                return _vm.getAccount()
-                              }
-                            },
-                            model: {
-                              value: _vm.formAccountOwn.destino,
-                              callback: function($$v) {
-                                _vm.$set(_vm.formAccountOwn, "destino", $$v)
-                              },
-                              expression: "formAccountOwn.destino"
-                            }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "v-col",
-                        { attrs: { md: "6", cols: "12" } },
-                        [
-                          _c("v-text-field", {
-                            attrs: {
-                              rules: _vm.rules.accountown.costFormat,
-                              label: "Monto a tranferir",
-                              placeholder: "Monto a tranferir",
-                              dense: ""
-                            },
-                            on: {
-                              keypress: function($event) {
-                                return _vm.isNumberKey($event)
-                              },
-                              blur: function($event) {
-                                return _vm.formatCost($event)
-                              }
-                            },
-                            model: {
-                              value: _vm.formAccountOwn.costFormat,
-                              callback: function($$v) {
-                                _vm.$set(_vm.formAccountOwn, "costFormat", $$v)
-                              },
-                              expression: "formAccountOwn.costFormat"
-                            }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "v-col",
-                        {
-                          staticClass: "text-center",
-                          attrs: { md: "6", offset: "3", cols: "12" }
-                        },
-                        [
-                          _c(
-                            "v-btn",
-                            {
-                              attrs: { color: "green", dark: "", block: "" },
-                              on: {
-                                click: function($event) {
-                                  return _vm.tranferir()
-                                }
-                              }
-                            },
-                            [
-                              _vm._v(
-                                "\n                            Tranferir\n                        "
-                              )
-                            ]
-                          )
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          ),
+          _c("v-tab-item", { staticClass: "pa-4" }, [_c("AccountOwn")], 1),
           _vm._v(" "),
-          _c(
-            "v-tab-item",
-            [
-              _c(
-                "v-card",
-                { attrs: { flat: "" } },
-                [
-                  _c("v-card-text", [
-                    _c("p", [
-                      _vm._v(
-                        "\n                        Morbi nec metus. Suspendisse faucibus, nunc et pellentesque egestas, lacus ante convallis tellus, vitae iaculis lacus elit id tortor. Sed mollis, eros et ultrices tempus, mauris ipsum aliquam libero, non adipiscing dolor urna\n                        a orci. Curabitur ligula sapien, tincidunt non, euismod vitae, posuere imperdiet, leo. Nunc sed turpis.\n                    "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("p", [
-                      _vm._v(
-                        "\n                        Suspendisse feugiat. Suspendisse faucibus, nunc et pellentesque egestas, lacus ante convallis tellus, vitae iaculis lacus elit id tortor. Proin viverra, ligula sit amet ultrices semper, ligula arcu tristique sapien, a accumsan\n                        nisi mauris ac eros. In hac habitasse platea dictumst. Fusce ac felis sit amet ligula pharetra condimentum.\n                    "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("p", [
-                      _vm._v(
-                        "\n                        Sed consequat, leo eget bibendum sodales, augue velit cursus nunc, quis gravida magna mi a libero. Nam commodo suscipit quam. In consectetuer turpis ut velit. Sed cursus turpis vitae tortor. Aliquam eu nunc.\n                    "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("p", [
-                      _vm._v(
-                        "\n                        Etiam ut purus mattis mauris sodales aliquam. Ut varius tincidunt libero. Aenean viverra rhoncus pede. Duis leo. Fusce fermentum odio nec arcu.\n                    "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("p", { staticClass: "mb-0" }, [
-                      _vm._v(
-                        "\n                        Donec venenatis vulputate lorem. Aenean viverra rhoncus pede. In dui magna, posuere eget, vestibulum et, tempor auctor, justo. Fusce commodo aliquam arcu. Suspendisse enim turpis, dictum sed, iaculis a, condimentum nec, nisi.\n                    "
-                      )
-                    ])
-                  ])
-                ],
-                1
-              )
-            ],
-            1
-          )
+          _c("v-tab-item", { staticClass: "pa-4" }, [_c("AccountOther")], 1)
         ],
         1
       )

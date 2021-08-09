@@ -10,6 +10,7 @@ class TranferOwn extends Model
   public $table = 'transfer_own';
 
   public $fillable = [
+    'id_user',
     'id_account_own_origen',
     'id_account_own_destino',
     'mount',
@@ -24,6 +25,7 @@ class TranferOwn extends Model
    * @var array
    */
   protected $casts = [
+    'id_user',
     'id_account_own_origen',
     'id_account_own_destino',
     'mount',

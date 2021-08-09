@@ -4,10 +4,16 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
+use Auth;
 use App\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\Request;
+use App\Mail\WelcomeMail;
+
 
 class RegisterController extends Controller
 {
@@ -71,5 +77,19 @@ class RegisterController extends Controller
           'email' => $data['email'],
           'password' => Hash::make($data['password']),
         ]);
+    }
+
+
+    public function register(Request $request)
+    {
+        $this->validator($request->all())->validate();
+
+        event(new Registered($user = $this->create($request->all())));
+
+        Mail::to($request->email)->send(new WelcomeMail($request->all()));
+
+       return redirect()->route('login')
+       ->withErrors(['identy' => 'Su usuario estara activo una vez confirme su correo.'])
+       ->withInput(request(['identy']));
     }
 }

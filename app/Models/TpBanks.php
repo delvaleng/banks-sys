@@ -5,17 +5,13 @@ namespace App\Models;
 use Eloquent as Model;
 
 
-class AccountOwn extends Model
+class TpBanks extends Model
 {
-  public $table = 'account_own';
+  public $table = 'tp_banks';
 
   public $fillable = [
-    'id_user',
-    'id_tp_banks',
-    'id_tp_account',
-    'n_account',
-    'balance',
-    'status',
+    'id',
+    'name',
   ];
 
   /**
@@ -24,12 +20,8 @@ class AccountOwn extends Model
    * @var array
    */
   protected $casts = [
-    'id_user',
-    'id_tp_banks',
-    'id_tp_account',
-    'n_account',
-    'balance',
-    'status',
+    'id',
+    'name',
   ];
 
   /**
@@ -39,6 +31,4 @@ class AccountOwn extends Model
    */
   public static $rules = [
   ];
-
-
 }
